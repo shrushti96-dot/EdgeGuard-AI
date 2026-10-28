@@ -54,27 +54,27 @@ The digital twin visualizes an industrial floor containing six distinct machines
 
 ```mermaid
 flowchart TD
-    subgraph "1. Edge Telemetry Layer"
-        Sensors["Simulated Industrial IoT Sensors\n• Air Temp • Process Temp • RPM\n• Torque • Tool Wear • Load"]
-        Simulator["IoTSensorSimulator & FleetManager\n(Brownian Drift + Thermal Load Modeling)"]
-        FaultEngine["Interactive Fault Injection\n(OSF, HDF, TWF, Vibration Instability)"]
+    subgraph Layer1 ["1. Edge Telemetry Layer"]
+        Sensors["Simulated Industrial IoT Sensors<br/>Air Temp, Process Temp, RPM, Torque, Wear, Load"]
+        Simulator["IoTSensorSimulator and FleetManager<br/>Brownian Drift and Thermal Load Modeling"]
+        FaultEngine["Interactive Fault Injection<br/>OSF, HDF, TWF, Vibration Instability"]
     end
 
-    subgraph "2. Edge Intelligence Runtime (Local Container)"
+    subgraph Layer2 ["2. Edge Intelligence Runtime - Local Container"]
         EdgeHub["Azure IoT Edge Hub / Telemetry Broker"]
-        InferenceEngine["EdgeInferenceEngine\n(RandomForestClassifier Artifact)"]
-        SafetyRules["Deterministic Safety Threshold Engine\n(ISO Engineering Limit Checks)"]
-        Classifier["Multi-Tier Health State Resolver\n(Normal / Warning / Critical)"]
+        InferenceEngine["EdgeInferenceEngine<br/>RandomForestClassifier Artifact"]
+        SafetyRules["Deterministic Safety Threshold Engine<br/>ISO Engineering Limit Checks"]
+        Classifier["Multi-Tier Health State Resolver<br/>Normal / Warning / Critical"]
     end
 
-    subgraph "3. Industrial SCADA Operator UI"
-        ThreeJS["3D WebGL Digital Twin\n(Three.js Scene + World-Projected DOM Labels)"]
-        Dashboard["Streamlit SCADA Dashboard\n• 5 KPIs • Telemetry Trends • Gauges"]
-        EventLog["Prediction Event Log & CSV Exporter"]
+    subgraph Layer3 ["3. Industrial SCADA Operator UI"]
+        ThreeJS["3D WebGL Digital Twin<br/>Three.js Scene with Projected DOM Labels"]
+        Dashboard["Streamlit SCADA Dashboard<br/>5 KPIs, Telemetry Trends, Gauges"]
+        EventLog["Prediction Event Log and CSV Exporter"]
     end
 
-    subgraph "4. Microsoft Azure ML Cloud"
-        Registry["Azure ML Model Registry (v2 SDK)\nVersioned Model: edgeguard-rf-machine-health"]
+    subgraph Layer4 ["4. Microsoft Azure ML Cloud"]
+        Registry["Azure ML Model Registry v2 SDK<br/>Model: edgeguard-rf-machine-health"]
         CloudStorage["Azure Blob / IoT Hub Telemetry Sink"]
     end
 
@@ -89,7 +89,7 @@ flowchart TD
     Classifier --> Dashboard
     Classifier --> EventLog
     Registry -.->|Model Artifact Deployment| InferenceEngine
-    EdgeHub -.->|Telemetry Sync (When Online)| CloudStorage
+    EdgeHub -.->|Telemetry Sync Online| CloudStorage
 ```
 
 ---
@@ -137,7 +137,8 @@ Actual Failure Risk:             36                     79
   - 🔴 **Critical**: Risk ≥ 50% or safety limits breached (triggering flashing 3D beacons and audio-visual cues).
 - **Physical Safety Rules vs. ML Inference**: Clearly distinguishes between probabilistic statistical model inference and deterministic engineering threshold violations (e.g. Process Temp > 46.5°C, Torque > 68 Nm).
 - **SCADA Analytics Suite**: Interactive Plotly multi-axis time-series charts, 6-machine fleet health distribution donut chart, feature influence attribution, and timestamped CSV export.
-- **Azure ML Cloud Integration**: Built-in support for Azure Machine Learning Model Registry (SDK v2) with zero-crash fallback to autonomous local edge mode when credentials are not configured.
+- **Azure ML Cloud Integration**: Built-in support for Azure Machine Learning Model Registry (SDK v2) via `azure_ml_register.py` and `src/azure_integration.py` with verified zero-crash fallback to autonomous local edge mode when credentials are not configured.
+- **Azure IoT Edge Deployment**: Includes production container specification (`deployment/Dockerfile.amd64`) and edge deployment manifest (`deployment/deployment.template.json`) ready for edge device provisioning and on-premises sub-millisecond execution.
 
 ---
 
@@ -152,7 +153,7 @@ Actual Failure Risk:             36                     79
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/EdgeGuard-AI.git
+   git clone https://github.com/shrushti96-dot/EdgeGuard-AI.git
    cd EdgeGuard-AI
    ```
 
@@ -247,3 +248,4 @@ When presenting this project for evaluation:
 * **Project**: EdgeGuard AI — Real-Time Machine Health Monitoring and Predictive Maintenance Using Azure Machine Learning and IoT Edge
 * **Target Domain**: Industrial IoT (IIoT), Predictive Maintenance (PdM), Industry 4.0 Digital Twins
 * **Frameworks**: Python, Streamlit, Three.js WebGL, Scikit-Learn, Azure Machine Learning SDK v2
+

@@ -8,25 +8,25 @@ This document specifies the operational topology and data ingestion architecture
 
 ```mermaid
 flowchart LR
-    subgraph "1. Edge Telemetry Layer"
-        Sensors["Industrial IoT Sensors\n• Temp • Torque\n• Speed • Tool Wear"]
-        Ingestion["Local Data Ingestion &\nPreprocessing Engine"]
+    subgraph Sub1 ["1. Edge Telemetry Layer"]
+        Sensors["Industrial IoT Sensors<br/>Temp, Torque, Speed, Tool Wear"]
+        Ingestion["Local Data Ingestion and<br/>Preprocessing Engine"]
     end
 
-    subgraph "2. Azure IoT Edge Runtime"
+    subgraph Sub2 ["2. Azure IoT Edge Runtime"]
         EdgeHub["IoT EdgeHub / Message Broker"]
-        EdgeModel["EdgeGuard AI Inference Engine\n(RandomForest Container)"]
-        Classifier["Risk Classifier &\nThreshold Alerting Engine"]
+        EdgeModel["EdgeGuard AI Inference Engine<br/>RandomForest Container"]
+        Classifier["Risk Classifier and<br/>Threshold Alerting Engine"]
     end
 
-    subgraph "3. Local Industrial Operator Interface"
-        Dashboard["EdgeGuard AI Dashboard\n(Streamlit & Plotly)"]
-        Alerts["Real-Time Warnings &\nPredictive Health KPIs"]
+    subgraph Sub3 ["3. Local Industrial Operator Interface"]
+        Dashboard["EdgeGuard AI Dashboard<br/>Streamlit and Plotly"]
+        Alerts["Real-Time Warnings and<br/>Predictive Health KPIs"]
     end
 
-    subgraph "4. Azure Cloud Layer (Optional Sync)"
-        AzureML["Azure Machine Learning\nModel Registry (v2 SDK)"]
-        IoTCloud["Azure IoT Hub / Blob Store\nTelemetry Telemetry Archive"]
+    subgraph Sub4 ["4. Azure Cloud Layer - Optional Sync"]
+        AzureML["Azure Machine Learning<br/>Model Registry v2 SDK"]
+        IoTCloud["Azure IoT Hub / Blob Store<br/>Telemetry Archive"]
     end
 
     Sensors --> Ingestion

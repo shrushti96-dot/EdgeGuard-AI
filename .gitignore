@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Environment files
+.env
+
+# Model and Data checkouts (large files optional)
+*.log
+
+# Streamlit
+.streamlit/
+
+# OS Specific
+.DS_Store
+Thumbs.db

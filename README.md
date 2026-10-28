@@ -54,43 +54,25 @@ The digital twin visualizes an industrial floor containing six distinct machines
 
 ```mermaid
 flowchart TD
-    subgraph Layer1 ["1. Edge Telemetry Layer"]
-        Sensors["Simulated Industrial IoT Sensors<br/>Air Temp, Process Temp, RPM, Torque, Wear, Load"]
-        Simulator["IoTSensorSimulator and FleetManager<br/>Brownian Drift and Thermal Load Modeling"]
-        FaultEngine["Interactive Fault Injection<br/>OSF, HDF, TWF, Vibration Instability"]
-    end
+    Sensors["1. Simulated IoT Sensors<br/>Temperature, Vibration, RPM, Torque, Tool Wear"]
+    Inference["2. EdgeGuard AI Edge Inference<br/>Sensor Preprocessing and Trained Random Forest Model"]
+    Assessment["3. Machine Health Assessment<br/>Tri-State Classification and Safety Thresholds"]
+    Dashboard["4. 3D Digital Twin Dashboard<br/>6 Named Machines, Telemetry Views, SCADA Analytics"]
+    AzureML["5. Azure Machine Learning<br/>Cloud Model Registry and Lifecycle Management"]
 
-    subgraph Layer2 ["2. Edge Intelligence Runtime - Local Container"]
-        EdgeHub["Azure IoT Edge Hub / Telemetry Broker"]
-        InferenceEngine["EdgeInferenceEngine<br/>RandomForestClassifier Artifact"]
-        SafetyRules["Deterministic Safety Threshold Engine<br/>ISO Engineering Limit Checks"]
-        Classifier["Multi-Tier Health State Resolver<br/>Normal / Warning / Critical"]
-    end
-
-    subgraph Layer3 ["3. Industrial SCADA Operator UI"]
-        ThreeJS["3D WebGL Digital Twin<br/>Three.js Scene with Projected DOM Labels"]
-        Dashboard["Streamlit SCADA Dashboard<br/>5 KPIs, Telemetry Trends, Gauges"]
-        EventLog["Prediction Event Log and CSV Exporter"]
-    end
-
-    subgraph Layer4 ["4. Microsoft Azure ML Cloud"]
-        Registry["Azure ML Model Registry v2 SDK<br/>Model: edgeguard-rf-machine-health"]
-        CloudStorage["Azure Blob / IoT Hub Telemetry Sink"]
-    end
-
-    Sensors --> Simulator
-    FaultEngine --> Simulator
-    Simulator --> EdgeHub
-    EdgeHub --> InferenceEngine
-    EdgeHub --> SafetyRules
-    InferenceEngine --> Classifier
-    SafetyRules --> Classifier
-    Classifier --> ThreeJS
-    Classifier --> Dashboard
-    Classifier --> EventLog
-    Registry -.->|Model Artifact Deployment| InferenceEngine
-    EdgeHub -.->|Telemetry Sync Online| CloudStorage
+    Sensors -->|Telemetry Stream| Inference
+    AzureML -.->|Registered Model Artifact| Inference
+    Inference -->|Risk Probabilities| Assessment
+    Assessment -->|Live Machine Health and Alerts| Dashboard
 ```
+
+### Architecture Workflow Stages
+
+1. **Simulated IoT Sensors**: Continuously generates physical telemetry across all six machines with operational drift and on-demand fault injection (Process and Air Temperature, Vibration Level, Rotational Speed, Torque, Tool Wear, and Load).
+2. **EdgeGuard AI Edge Inference**: Preprocesses sensor telemetry and runs local on-premises inference against the serialized Random Forest model artifact (`models/machine_health_model.joblib`) with sub-millisecond latency (`< 1 ms`).
+3. **Machine Health Assessment**: Evaluates calibrated probabilistic failure risk alongside deterministic engineering safety limits (e.g., Temperature `> 46.5°C`, Torque `> 68.0 Nm`, Tool Wear `> 200 min`) to resolve machine status into 🟢 **Normal**, 🟡 **Warning**, or 🔴 **Critical**.
+4. **3D Digital Twin Dashboard**: SCADA-style interface featuring an interactive Three.js 3D factory floor with permanent overhead status labels for all six machines, real-time sensor cards, telemetry trends, and CSV data export.
+5. **Azure Machine Learning**: Manages the machine learning lifecycle by registering and versioning trained model artifacts (`edgeguard-rf-machine-health`) via Azure ML SDK v2, with zero-crash fallback to autonomous local execution when cloud credentials are unconfigured.
 
 ---
 
